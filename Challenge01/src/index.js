@@ -9,13 +9,7 @@ server.use(express.json());
 *******************/
 
 var cont = 0;
-const projects =[
-  {
-    id: "1",
-    title: "projeto 01",
-    tasks: []
-  }
-];
+const projects =[];
 
 
 /************ 
@@ -48,22 +42,14 @@ function searchId(req, res, next) {
     Routes
 **************/
 
-server.get('/projects', contReq,(req, res)=>{
+server.get('/projects', contReq,(_, res)=>{
   return res.json(projects);
 });
 
 server.post('/projects', contReq,(req, res)=>{
-  const { id } = req.body;
-  const { title } = req.body;
-  const { tasks } = req.body;
-
-  const project = {
-    id,
-    title,
-    tasks,
-  };
-
-  projects.push(project);
+  const { id, title, tasks } = req.body;
+  
+  projects.push({id, title, tasks});
 
   return res.json(projects);
 
@@ -72,9 +58,9 @@ server.post('/projects', contReq,(req, res)=>{
 server.post('/projects/:id/tasks', contReq, searchId,(req, res)=>{
   const { id } = req.params;
   const { tasks } = req.params;
-  const titleTask = req.body.title;
+  const { title } = req.body;
 
-  projects.find(w=>w.id == id).tasks.push(titleTask);
+  projects.find(w=>w.id === id).tasks.push(title);
 
   return res.json(projects);
 
@@ -85,7 +71,9 @@ server.put('/projects/:id', contReq, searchId,(req, res) =>{
   const { id } = req.params;
   const { title } = req.body;
 
-  projects.find(x=>x.id == id).title = title;
+  const index = projects.find(x=>x.id === id);
+
+  projects[index].title = title;
 
   return res.json(projects);
 
